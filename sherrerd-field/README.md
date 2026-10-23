@@ -1,14 +1,18 @@
 # Sherrerd Field Linear Reservoir Model
 
-The Sherrerd Field BMP is represented using a simplified **linear reservoir model**. It is a field at Princeton University used for Lacrosse and other sports activities. 
+Sherrerd Field is an athletic field at Princeton University used for lacrosse and other sports activities. The site includes a stormwater Best Management Practice (BMP) designed to manage runoff generated from the field and surrounding drainage area.
 
-Instead of modeling each physical component of the BMP separately, such as the soil, gravel layer, drainage pipes, and outlet structure, the entire system is represented as one effective storage reservoir.
+This project uses observed rainfall and outlet-flow data from the Sherrerd Field BMP to examine how the system responds during storm events.
+
+To represent the system in a simple and interpretable way, the BMP is modeled using a **linear reservoir model**.
+
+Instead of modeling each physical component separately, such as the soil, gravel layer, drainage pipes, and outlet structure, the entire BMP is represented as one effective storage reservoir.
+
+In simple terms, the model treats the BMP like a temporary holding system: rainfall adds water to storage, the stored water builds up, and once enough water is present, it is released through the outlet.
 
 Conceptually:
 
 **Rainfall → Storage → Outlet Flow**
-
-Rainfall increases the amount of water stored in the BMP. The system is assumed to retain some water before measurable outflow begins. Once storage exceeds a threshold, water is released through the outlet.
 
 ### Water Balance
 
