@@ -84,7 +84,7 @@ The model contains two main calibration parameters:
 
 | Parameter | Meaning | Units |
 |---|---|---|
-| $k$ | Drainage coefficient controlling how quickly the BMP releases stored water | hr$^{-1}$ |
+| $k$ | Drainage coefficient controlling how quickly the BMP releases stored water | hr$$^{-1}$$ |
 | $S_0$ | Effective storage threshold before outlet flow begins | in |
 
 The parameters are calibrated by comparing the modeled outlet hydrograph with the observed Sherrerd Field outlet flow.
