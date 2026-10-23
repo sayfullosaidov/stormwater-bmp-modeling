@@ -63,13 +63,13 @@ then outlet flow increases as storage above the threshold increases.
 
 The storage equation is solved through time using the **Forward Euler method**:
 
-$$
+$$ 
 S_{n+1}
 =
 S_n
 +
 \left(P_n-Q_n\right)\Delta t
-$$
+ $$
 
 At each timestep, the model:
 
