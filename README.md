@@ -64,25 +64,6 @@ $$
 
 These checks help identify possible issues with drainage-area assumptions, sensor measurements, event selection, or model inputs before calibration.
 
-## Repository Structure
-
-```text
-stormwater-bmp-modeling/
-│
-├── README.md
-├── data/
-│
-├── sherrerd-field/
-│   ├── sherrerd_modeling.ipynb
-│   └── README.md
-│
-├── another-bmp/
-│   ├── modeling.ipynb
-│   └── README.md
-│
-└── figures/
-```
-
 Each BMP site can have its own notebook and documentation describing the available data, preprocessing steps, modeling approach, and results.
 
 ## Tools
