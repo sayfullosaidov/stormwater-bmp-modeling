@@ -1,76 +1,108 @@
 # Sherrerd Field Linear Reservoir Model
 
-## Overview
+The Sherrerd Field BMP is represented using a simplified **linear reservoir model**.
 
-This project develops a simple rainfall–outflow model for the Sherrerd Field stormwater BMP.
+Instead of modeling each physical component of the BMP separately, such as the soil, gravel layer, drainage pipes, and outlet structure, the entire system is represented as one effective storage reservoir.
 
-Rather than explicitly modeling individual soil layers, gravel storage, underdrain pipes, and the outlet structure, the BMP is represented as a single effective storage reservoir.
+Conceptually:
 
-The model is used to investigate whether a simple storage-based representation can reproduce the observed outlet response during monitored storm events.
+**Rainfall → Storage → Outlet Flow**
 
-## Conceptual Model
+Rainfall increases the amount of water stored in the BMP. The system is assumed to retain some water before measurable outflow begins. Once storage exceeds a threshold, water is released through the outlet.
 
-The BMP is represented as:
+### Water Balance
 
-**Rainfall → Effective BMP Storage → Outlet Flow**
+The change in storage is described by:
 
-The reservoir water balance is:
-
-\[
+$$
 \frac{dS}{dt} = P(t) - Q(t)
-\]
+$$
 
 where:
 
-- \(S\) is effective BMP storage,
-- \(P(t)\) is rainfall input,
-- \(Q(t)\) is modeled outlet flow.
+- $S$ = effective storage
+- $P(t)$ = rainfall input
+- $Q(t)$ = modeled outlet flow
 
-Outflow is represented using a threshold linear reservoir:
+### Outlet Relationship
 
-\[
-Q(t) = k\max(S-S_0,0)
-\]
+Outflow begins once storage exceeds an effective storage threshold, $S_0$:
+
+$$
+Q(t) = k\max\left(S(t)-S_0,0\right)
+$$
 
 where:
 
-- \(k\) is the reservoir drainage coefficient,
-- \(S_0\) is the effective storage threshold before measurable outflow begins.
+- $S_0$ = storage threshold before outlet flow begins
+- $k$ = drainage coefficient controlling how quickly stored water is released
 
-This threshold allows the model to represent the ability of the BMP to store and infiltrate rainfall before producing outlet discharge.
+If
 
-## Data
+$$
+S \leq S_0
+$$
 
-The model uses monitored storm-event data consisting of:
+then
 
-- rainfall intensity,
-- event time,
-- measured outlet discharge.
+$$
+Q = 0
+$$
 
-Observed rainfall provides the model input, while measured outlet flow is used for calibration and model evaluation.
+and no outlet flow is produced.
 
-## Calibration
+If
 
-Two effective parameters are calibrated:
+$$
+S > S_0
+$$
 
-- **\(k\)** — controls how quickly the BMP drains once the storage threshold is exceeded,
-- **\(S_0\)** — represents the effective storage available before outlet flow begins.
+then outlet flow increases as storage above the threshold increases.
 
-A simple grid search is used to identify the parameter combination that minimizes the difference between modeled and observed outlet flow.
+### Numerical Solution
 
-## Model Evaluation
+The storage equation is solved through time using the **Forward Euler method**:
 
-Model performance is evaluated using:
+$$
+S_{n+1}
+=
+S_n
++
+\left(P_n-Q_n\right)\Delta t
+$$
 
-- observed versus modeled hydrographs,
-- root mean square error (RMSE),
-- Nash–Sutcliffe Efficiency (NSE),
-- total outflow volume error.
+At each timestep, the model:
 
-If additional monitored storm events are available, they can be used for independent model validation without changing the calibrated parameters.
+1. adds rainfall to storage,
+2. calculates outlet flow based on the current storage,
+3. removes that outflow from storage,
+4. moves to the next timestep.
 
-## Purpose
+### Model Parameters
 
-The goal of this project is not to reproduce every physical component of the BMP. Instead, it tests whether the observed rainfall–outflow behavior can be explained using a simple and interpretable reservoir model with only a small number of parameters.
+The model contains two main calibration parameters:
 
-This provides a compact framework for analyzing BMP storage, drainage response, and storm-event performance while remaining directly constrained by field observations.
+| Parameter | Meaning | Units |
+|---|---|---|
+| $k$ | Drainage coefficient controlling how quickly the BMP releases stored water | hr$^{-1}$ |
+| $S_0$ | Effective storage threshold before outlet flow begins | in |
+
+The parameters are calibrated by comparing the modeled outlet hydrograph with the observed Sherrerd Field outlet flow.
+
+### Model Interpretation
+
+The model is intentionally simplified. Storage $S$ does not represent the water depth in one specific BMP layer. Instead, it represents the combined effective storage behavior of the entire system.
+
+Therefore, the model can be summarized as:
+
+$$
+\text{Rainfall}
+\rightarrow
+\text{Storage}
+\rightarrow
+\text{Threshold Exceeded}
+\rightarrow
+\text{Outflow}
+$$
+
+The purpose of the model is to determine whether a small number of effective parameters can reproduce the timing and magnitude of the observed rainfall--outflow response.
