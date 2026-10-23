@@ -1,102 +1,102 @@
-# Sherrerd Field Linear Reservoir Model
+# Stormwater BMP Modeling
 
-The Sherrerd Field BMP is represented using a simplified **linear reservoir model**.
+This repository contains Python-based analysis and modeling of stormwater Best Management Practices (BMPs).
 
-Instead of modeling each physical component of the BMP separately, such as the soil, gravel layer, drainage pipes, and outlet structure, the entire system is represented as one effective storage reservoir.
+Stormwater BMPs are systems designed to manage runoff by storing, slowing, infiltrating, or releasing water during and after rainfall events. This project uses monitored rainfall, water-level, inflow, and outflow data to investigate how different BMPs respond to storm events.
 
-Conceptually:
+## Objectives
 
-**Rainfall → Storage → Outlet Flow**
+The main goals of this repository are to:
 
-Rainfall increases the amount of water stored in the BMP. The system is assumed to retain some water before measurable outflow begins. Once storage exceeds a threshold, water is released through the outlet.
+- clean and organize field monitoring data,
+- identify and analyze individual storm events,
+- compare rainfall, inflow, storage, and outflow behavior,
+- perform event-scale water-balance checks,
+- develop and test different hydrologic modeling approaches,
+- calibrate model parameters using observed data,
+- compare modeled and measured hydrographs,
+- evaluate the strengths and limitations of different modeling methods.
 
-### Water Balance
+## Data
 
-The change in storage is described by:
+Depending on the monitoring site, available data may include:
+
+- rainfall depth and intensity,
+- inflow discharge,
+- outlet discharge,
+- water level,
+- sensor timestamps,
+- contributing drainage area.
+
+The monitoring records are processed and synchronized onto common time intervals before analysis and modeling.
+
+## Modeling
+
+Different BMP sites may require different modeling approaches depending on the available data and the physical behavior of the system.
+
+Models explored in this repository may range from simple conceptual storage models to more detailed hydrologic or hydraulic approaches.
+
+The purpose is not necessarily to reproduce every physical component of a BMP individually, but to determine which modeling approaches can reasonably represent observed system behavior.
+
+## Event Analysis
+
+Before fitting a model, observed data are examined using basic hydrologic checks.
+
+For example, rainfall volume over a contributing drainage area can be estimated as
 
 $$
-\frac{dS}{dt} = P(t) - Q(t)
+V_{\mathrm{rain}} = P A
 $$
 
 where:
 
-- $S$ = effective storage
-- $P(t)$ = rainfall input
-- $Q(t)$ = modeled outlet flow
+- $V_{\mathrm{rain}}$ is rainfall volume,
+- $P$ is total rainfall depth,
+- $A$ is the contributing drainage area.
 
-### Outlet Relationship
-
-Outflow begins once storage exceeds an effective storage threshold, $S_0$:
+Observed discharge volume can be estimated numerically from the measured hydrograph:
 
 $$
-Q(t) = k\max\left(S(t)-S_0,0\right)
+V_{\mathrm{out}}
+\approx
+\sum Q_i \Delta t
 $$
 
-where:
+These checks help identify possible issues with drainage-area assumptions, sensor measurements, event selection, or model inputs before calibration.
 
-- $S_0$ = storage threshold before outlet flow begins
-- $k$ = drainage coefficient controlling how quickly stored water is released
+## Repository Structure
 
-If
+```text
+stormwater-bmp-modeling/
+│
+├── README.md
+├── data/
+│
+├── sherrerd-field/
+│   ├── sherrerd_modeling.ipynb
+│   └── README.md
+│
+├── another-bmp/
+│   ├── modeling.ipynb
+│   └── README.md
+│
+└── figures/
+```
 
-$$
-S \leq S_0
-$$
+Each BMP site can have its own notebook and documentation describing the available data, preprocessing steps, modeling approach, and results.
 
-then
+## Tools
 
-$$
-Q = 0
-$$
+The analysis primarily uses:
 
-and no outlet flow is produced.
+- Python
+- pandas
+- NumPy
+- Matplotlib
+- Jupyter Notebook / Google Colab
 
-If
+Additional modeling tools may be incorporated as the project develops.
 
-$$
-S > S_0
-$$
+## Status
 
-then outlet flow increases as storage above the threshold increases.
-
-### Numerical Solution
-
-The storage equation is solved through time using the **Forward Euler method**:
-
-$$ S_{n+1}=S_n+\left(P_n-Q_n\right)\Delta t $$
-
-At each timestep, the model:
-
-1. adds rainfall to storage,
-2. calculates outlet flow based on the current storage,
-3. removes that outflow from storage,
-4. moves to the next timestep.
-
-### Model Parameters
-
-The model contains two main calibration parameters:
-
-| Parameter | Meaning | Units |
-|---|---|---|
-| $k$ | Drainage coefficient controlling how quickly the BMP releases stored water | hr $^{-1}$ |
-| $S_0$ | Effective storage threshold before outlet flow begins | in |
-
-The parameters are calibrated by comparing the modeled outlet hydrograph with the observed Sherrerd Field outlet flow.
-
-### Model Interpretation
-
-The model is intentionally simplified. Storage $S$ does not represent the water depth in one specific BMP layer. Instead, it represents the combined effective storage behavior of the entire system.
-
-Therefore, the model can be summarized as:
-
-$$
-\text{Rainfall}
-\rightarrow
-\text{Storage}
-\rightarrow
-\text{Threshold Exceeded}
-\rightarrow
-\text{Outflow}
-$$
-
-The purpose of the model is to determine whether a small number of effective parameters can reproduce the timing and magnitude of the observed rainfall--outflow response.
+This is an ongoing project exploring different approaches for modeling monitored stormwater BMPs. Methods and site analyses will be expanded as additional data and modeling approaches are evaluated.
